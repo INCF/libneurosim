@@ -1,0 +1,2 @@
+* The connection_generator API should be extended with a means of
+  specifying the order of iteration (sources or targets first)

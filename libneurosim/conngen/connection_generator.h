@@ -29,6 +29,9 @@
 
 /**
  * Pure abstract base class for connection generators.
+ *
+ * TODO: Extend with a means of specifying the order of iteration
+ * (sources or targets first)
  */
 class ConnectionGenerator {
  public:
