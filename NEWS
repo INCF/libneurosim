@@ -1,0 +1,12 @@
+libneurosim NEWS --- history of user-visible changes.
+Copyright (C) 2013 INCF
+
+Please send libneurosim bug reports to mikael.djurfeldt@incf.org.
+
+
+First release: 1.0
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:
