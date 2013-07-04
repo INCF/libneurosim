@@ -7,6 +7,6 @@ libneurosim_la_SOURCES = \
   $(srcdir)/conngen/connection_generator.h
 
 libneurosim_la_HEADERS = \
-  conngen/connection_generator.h
+  $(srcdir)/conngen/connection_generator.h
 
 libneurosim_ladir = $(includedir)/neurosim
