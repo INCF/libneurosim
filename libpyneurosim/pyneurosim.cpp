@@ -22,12 +22,18 @@
 
 #include "pyneurosim.h"
 
+void PyCSA_init ();
+
+extern "C" {
+  ConnectionGenerator* CGL_unpackConnectionGenerator (PyObject* pObj);
+}
+
 namespace PNS {
 
   ConnectionGenerator*
   unpackConnectionGenerator (PyObject* pObj)
   {
-    return 0;
+    return CGL_unpackConnectionGenerator (pObj);
   }
 
   void
@@ -35,4 +41,9 @@ namespace PNS {
   {
   }
 
+  void
+  init ()
+  {
+    PyCSA_init ();
+  }
 }

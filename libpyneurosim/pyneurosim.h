@@ -35,6 +35,8 @@ ConnectionGenerator* unpackConnectionGenerator (PyObject* pObj);
 
 void rescanConnectionGenerator ();
 
+void init ();
+
 }
 
 #endif /* #ifndef PYNEUROSIM_H */
