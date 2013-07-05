@@ -7,7 +7,9 @@ endif
 
 libpyneurosim_la_SOURCES = \
   $(srcdir)/pyneurosim.cpp \
-  $(srcdir)/pyneurosim.h
+  $(srcdir)/pyneurosim.h \
+  $(srcdir)/pycsa.cpp \
+  $(srcdir)/pycsa.h
 
 libpyneurosim_la_HEADERS = \
   $(srcdir)/pyneurosim.h
