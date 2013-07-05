@@ -13,7 +13,6 @@ if test $PYTHON != [:]; then
   PYTHON_INCLUDE=`$PYTHON -c 'from distutils import sysconfig;\
   			      print (sysconfig.get_python_inc ())'`
 fi
-echo $PYTHON_INCLUDE
 
 AC_SUBST(PYTHON_INCLUDE)
 
