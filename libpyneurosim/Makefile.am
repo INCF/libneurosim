@@ -12,7 +12,7 @@ libpyneurosim_la_SOURCES = \
 libpyneurosim_la_HEADERS = \
   $(srcdir)/pyneurosim.h
 
-libpyneurosim_la_CXXFLAGS = -I@PYTHON_INCLUDE@ -I../libneurosim/conngen
+libpyneurosim_la_CXXFLAGS = -I@PYTHON_INCLUDE@ -I$(srcdir)/../libneurosim/conngen
 
 libpyneurosim_la_LDFLAGS = $(top_builddir)/libneurosim/libneurosim.la
 
