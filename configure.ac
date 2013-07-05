@@ -8,7 +8,14 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 AM_PATH_PYTHON
-AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != :])
+AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != [:]])
+if test $PYTHON != [:]; then
+  PYTHON_INCLUDE=`$PYTHON -c 'from distutils import sysconfig;\
+  			      print (sysconfig.get_python_inc ())'`
+fi
+echo $PYTHON_INCLUDE
+
+AC_SUBST(PYTHON_INCLUDE)
 
 AC_CONFIG_FILES([
   Makefile
