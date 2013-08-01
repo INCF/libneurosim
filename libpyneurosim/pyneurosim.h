@@ -31,11 +31,17 @@ extern "C" {
 
 namespace PNS {
 
-ConnectionGenerator* unpackConnectionGenerator (PyObject* pObj);
+  bool isConnectionGenerator (PyObject* pObj);
 
-void rescanConnectionGenerator ();
+  ConnectionGenerator* unpackConnectionGenerator (PyObject* pObj);
 
-void init ();
+  typedef bool (*checkFuncT) (PyObject*);
+
+  typedef ConnectionGenerator* (*unpackFuncT) (PyObject*);
+
+  void registerConnectionGeneratorType (checkFuncT, unpackFuncT);
+
+  void init ();
 
 }
 

@@ -25,8 +25,6 @@
 #include <string>
 #include <iostream>
 
-static PyObject *NESTError = NULL;
-
 static PyObject* pMask = 0;
 static PyObject* pConnectionSet = 0;
 static PyObject* pCSAClasses = 0;
@@ -39,7 +37,7 @@ static void
 error (std::string errstring)
 {
   PYGILSTATE_ENSURE (gstate);
-  PyErr_SetString (NESTError, errstring.c_str ());
+  PyErr_SetString (PyExc_RuntimeError, errstring.c_str ());
   PYGILSTATE_RELEASE (gstate);
 }
 
@@ -272,7 +270,12 @@ PyCSAGenerator::next (int& source, int& target, double* value)
 void
 PyCSA_init(void)
 {
-  NESTError = Py_BuildValue("s", "NESTError");
+}
+
+bool
+CGL_isConnectionGenerator (PyObject* pObj)
+{
+  return PyPyCSA_Check (pObj);
 }
 
 ConnectionGenerator*

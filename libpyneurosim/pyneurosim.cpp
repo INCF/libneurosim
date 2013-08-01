@@ -25,10 +25,17 @@
 void PyCSA_init ();
 
 extern "C" {
+  bool CGL_isConnectionGenerator (PyObject* pObj);
   ConnectionGenerator* CGL_unpackConnectionGenerator (PyObject* pObj);
 }
 
 namespace PNS {
+
+  bool
+  isConnectionGenerator (PyObject* pObj)
+  {
+    return CGL_isConnectionGenerator (pObj);
+  }
 
   ConnectionGenerator*
   unpackConnectionGenerator (PyObject* pObj)
@@ -37,7 +44,7 @@ namespace PNS {
   }
 
   void
-  rescanConnectionGenerator ()
+  registerConnectionGeneratorType (checkFuncT, unpackFuncT)
   {
   }
 
@@ -46,4 +53,5 @@ namespace PNS {
   {
     PyCSA_init ();
   }
+
 }

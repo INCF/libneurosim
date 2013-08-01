@@ -39,6 +39,7 @@ extern "C" {
 #include "connection_generator.h"
 
 extern "C" {
+  bool CGL_isConnectionGenerator (PyObject* pObj);
   ConnectionGenerator* CGL_unpackConnectionGenerator (PyObject* pObj);
 }
 
