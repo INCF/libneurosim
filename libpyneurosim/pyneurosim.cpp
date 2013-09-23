@@ -22,6 +22,8 @@
 
 #include "pyneurosim.h"
 
+#include <vector>
+
 void PyCSA_init ();
 
 extern "C" {
@@ -31,21 +33,44 @@ extern "C" {
 
 namespace PNS {
 
+  struct ConnGenType {
+    ConnGenType (CheckFuncT checkFunc, UnpackFuncT unpackFunc)
+      : isConnectionGenerator (checkFunc),
+	unpackConnectionGenerator (unpackFunc) { }
+    CheckFuncT isConnectionGenerator;
+    UnpackFuncT unpackConnectionGenerator;
+  };
+
+  typedef std::vector<ConnGenType> ConnGenTypes;
+
+  static ConnGenTypes connGenTypes;
+
   bool
   isConnectionGenerator (PyObject* pObj)
   {
+    for (ConnGenTypes::iterator type = connGenTypes.begin ();
+	 type != connGenTypes.end ();
+	 ++type)
+      if (type->isConnectionGenerator (pObj))
+	return true;
     return CGL_isConnectionGenerator (pObj);
   }
 
   ConnectionGenerator*
   unpackConnectionGenerator (PyObject* pObj)
   {
+    for (ConnGenTypes::iterator type = connGenTypes.begin ();
+	 type != connGenTypes.end ();
+	 ++type)
+      if (type->isConnectionGenerator (pObj))
+	return type->unpackConnectionGenerator (pObj);
     return CGL_unpackConnectionGenerator (pObj);
   }
 
   void
-  registerConnectionGeneratorType (checkFuncT, unpackFuncT)
+  registerConnectionGeneratorType (CheckFuncT checkFunc, UnpackFuncT unpackFunc)
   {
+    connGenTypes.push_back (ConnGenType (checkFunc, unpackFunc));
   }
 
   void

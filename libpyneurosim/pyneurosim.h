@@ -35,11 +35,11 @@ namespace PNS {
 
   ConnectionGenerator* unpackConnectionGenerator (PyObject* pObj);
 
-  typedef bool (*checkFuncT) (PyObject*);
+  typedef bool (*CheckFuncT) (PyObject*);
 
-  typedef ConnectionGenerator* (*unpackFuncT) (PyObject*);
+  typedef ConnectionGenerator* (*UnpackFuncT) (PyObject*);
 
-  void registerConnectionGeneratorType (checkFuncT, unpackFuncT);
+  void registerConnectionGeneratorType (CheckFuncT, UnpackFuncT);
 
   void init ();
 
