@@ -26,6 +26,7 @@
 //#define CONNECTION_GENERATOR_DEBUG 1
 
 #include <vector>
+#include <string>
 
 /**
  * Pure abstract base class for connection generators.
@@ -99,10 +100,34 @@ class ConnectionGenerator {
    * Advance to next connection or return false
    */
   virtual bool next (int& source, int& target, double* value) = 0;
+
+  static ConnectionGenerator* fromXML (std::string xml);
 };
 
 #ifdef CONNECTION_GENERATOR_DEBUG
 ConnectionGenerator* makeDummyConnectionGenerator ();
 #endif
+
+class ConnectionGeneratorClosure {
+public:
+  static ConnectionGeneratorClosure* fromXML (std::string xml);
+  virtual ConnectionGenerator* operator() () { return 0; }
+  virtual ConnectionGenerator* operator() (double) { return 0; }
+  virtual ConnectionGenerator* operator() (double, double) { return 0; }
+  virtual ConnectionGenerator* operator() (double, double, double) { return 0; }
+  virtual ConnectionGenerator* operator() (double, double, double, double)
+  { return 0; }
+};
+
+typedef ConnectionGenerator* (*ParseCGFunc) (std::string);
+typedef ConnectionGeneratorClosure* (*ParseCGCFunc) (std::string);
+
+void registerConnectionGeneratorLibrary (std::string library,
+					 ParseCGFunc pcg,
+					 ParseCGCFunc pcgc);
+
+// Local Variables:
+// mode:c++
+// End:
 
 #endif /* #ifndef CONNECTION_GENERATOR_H */

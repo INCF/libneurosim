@@ -71,3 +71,22 @@ ConnectionGenerator* makeDummyConnectionGenerator ()
 }
 
 #endif
+
+ConnectionGenerator*
+ConnectionGenerator::fromXML (std::string xml)
+{
+  return 0;
+}
+
+ConnectionGeneratorClosure*
+ConnectionGeneratorClosure::fromXML (std::string xml)
+{
+  return 0;
+}
+
+void
+registerConnectionGeneratorLibrary (std::string library,
+				    ParseCGFunc pcg,
+				    ParseCGCFunc pcgc)
+{
+}
