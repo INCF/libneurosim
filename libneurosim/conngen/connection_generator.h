@@ -101,6 +101,8 @@ class ConnectionGenerator {
    */
   virtual bool next (int& source, int& target, double* value) = 0;
 
+  static void selectCGImplementation (std::string tag, std::string library);
+
   static ConnectionGenerator* fromXML (std::string xml);
 };
 

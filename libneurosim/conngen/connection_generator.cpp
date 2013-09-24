@@ -72,6 +72,12 @@ ConnectionGenerator* makeDummyConnectionGenerator ()
 
 #endif
 
+void
+ConnectionGenerator::selectCGImplementation (std::string tag,
+					     std::string library)
+{
+}
+
 ConnectionGenerator*
 ConnectionGenerator::fromXML (std::string xml)
 {
