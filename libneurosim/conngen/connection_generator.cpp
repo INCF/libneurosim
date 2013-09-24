@@ -72,16 +72,30 @@ ConnectionGenerator* makeDummyConnectionGenerator ()
 
 #endif
 
+// The following implementation is INCOMPLETE
+
 void
 ConnectionGenerator::selectCGImplementation (std::string tag,
 					     std::string library)
 {
 }
 
+struct CGImplementation {
+  CGImplementation (ParseCGFunc pcg, ParseCGCFunc pcgc)
+    : CGFromXML (pcg), CGCFromXML (pcgc) { }
+  ParseCGFunc CGFromXML;
+  ParseCGCFunc CGCFromXML;
+};
+
+typedef std::vector<CGImplementation> CGImplementationsT;
+
+static CGImplementationsT CGImplementations;
+
 ConnectionGenerator*
 ConnectionGenerator::fromXML (std::string xml)
 {
-  return 0;
+  ParseCGFunc parseCG = CGImplementations[0].CGFromXML;
+  return parseCG (xml);
 }
 
 ConnectionGeneratorClosure*
@@ -95,4 +109,5 @@ registerConnectionGeneratorLibrary (std::string library,
 				    ParseCGFunc pcg,
 				    ParseCGCFunc pcgc)
 {
+  CGImplementations.push_back (CGImplementation (pcg, pcgc));
 }
