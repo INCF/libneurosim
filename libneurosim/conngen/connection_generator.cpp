@@ -22,6 +22,9 @@
 
 #include "connection_generator.h"
 
+#include <iostream>
+#include <ltdl.h>
+
 ConnectionGenerator::~ConnectionGenerator ()
 {}
 
@@ -78,6 +81,25 @@ void
 ConnectionGenerator::selectCGImplementation (std::string tag,
 					     std::string library)
 {
+  static bool dlInitialized;
+  if (!dlInitialized)
+    {
+      if (lt_dlinit ())
+	{
+	  std::cerr << "Couldn't initialize libltdl" << std::endl;
+	  abort ();
+	}
+      dlInitialized = true;
+    }
+  lt_dlhandle dl = lt_dlopen (library.c_str ());
+
+  if (!dl)
+    {
+      //*fixme* Add proper error handling
+      std::cerr << "Couldn't load library " << library << std::endl;
+      abort ();
+    }
+
 }
 
 struct CGImplementation {
