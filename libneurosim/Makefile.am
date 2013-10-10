@@ -1,14 +1,20 @@
 ## Process this file with Automake to create Makefile.in
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 lib_LTLIBRARIES = libneurosim.la
 
 libneurosim_la_SOURCES = \
-  $(srcdir)/conngen/connection_generator.cpp \
-  $(srcdir)/conngen/connection_generator.h \
+  conngen/connection_generator.cpp \
+  conngen/connection_generator.h \
   version.c version.h
 
 libneurosim_la_HEADERS = \
-  $(srcdir)/conngen/connection_generator.h \
+  conngen/connection_generator.h \
   version.h
 
+libneurosim_la_LIBADD= @LIBLTDL@ @LIBADD_DL@
+
 libneurosim_ladir = $(includedir)/neurosim
+
+AM_CPPFLAGS= @INCLTDL@

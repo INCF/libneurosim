@@ -13,8 +13,8 @@ if test -z "$AUTOMAKE" ; then
 fi
 
 ./aclocal.sh &&
-echo libtoolize --copy --automake &&
-libtoolize --copy --automake &&
+echo libtoolize --copy --automake --ltdl &&
+libtoolize --copy --automake --ltdl &&
 echo autoheader &&
 autoheader &&
 echo autoconf &&

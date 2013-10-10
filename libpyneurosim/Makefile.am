@@ -1,5 +1,7 @@
 ## Process this file with Automake to create Makefile.in
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 lib_LTLIBRARIES =
 if HAVE_PYTHON
 lib_LTLIBRARIES += libpyneurosim.la
