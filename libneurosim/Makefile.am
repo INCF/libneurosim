@@ -13,8 +13,8 @@ libneurosim_la_HEADERS = \
   conngen/connection_generator.h \
   version.h
 
-libneurosim_la_LIBADD= @LIBLTDL@ @LIBADD_DL@
+libneurosim_la_LIBADD= @LIBLTDL@ @LIBADD_DL@ @MPI_LIBS@
 
 libneurosim_ladir = $(includedir)/neurosim
 
-AM_CPPFLAGS= @INCLTDL@
+AM_CPPFLAGS= @INCLTDL@ @MPI_INCLUDE@
