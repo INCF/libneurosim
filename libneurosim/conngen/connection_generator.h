@@ -104,6 +104,8 @@ class ConnectionGenerator {
   static void selectCGImplementation (std::string tag, std::string library);
 
   static ConnectionGenerator* fromXML (std::string xml);
+
+  static ConnectionGenerator* fromXMLFile (std::string fileName);
 };
 
 #ifdef CONNECTION_GENERATOR_DEBUG
@@ -113,6 +115,7 @@ ConnectionGenerator* makeDummyConnectionGenerator ();
 class ConnectionGeneratorClosure {
 public:
   static ConnectionGeneratorClosure* fromXML (std::string xml);
+  static ConnectionGeneratorClosure* fromXMLFile (std::string fname);
   virtual ConnectionGenerator* operator() () { return 0; }
   virtual ConnectionGenerator* operator() (double) { return 0; }
   virtual ConnectionGenerator* operator() (double, double) { return 0; }
@@ -126,7 +129,9 @@ typedef ConnectionGeneratorClosure* (*ParseCGCFunc) (std::string);
 
 void registerConnectionGeneratorLibrary (std::string library,
 					 ParseCGFunc pcg,
-					 ParseCGCFunc pcgc);
+					 ParseCGFunc pcgFile,
+					 ParseCGCFunc pcgc,
+					 ParseCGCFunc pcgcFile);
 
 // Local Variables:
 // mode:c++

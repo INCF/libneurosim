@@ -23,6 +23,7 @@
 #include "connection_generator.h"
 
 #include <iostream>
+#include <map>
 #include <ltdl.h>
 
 ConnectionGenerator::~ConnectionGenerator ()
@@ -77,9 +78,8 @@ ConnectionGenerator* makeDummyConnectionGenerator ()
 
 // The following implementation is INCOMPLETE
 
-void
-ConnectionGenerator::selectCGImplementation (std::string tag,
-					     std::string library)
+static lt_dlhandle
+loadLibrary (std::string library)
 {
   static bool dlInitialized;
   if (!dlInitialized)
@@ -100,24 +100,77 @@ ConnectionGenerator::selectCGImplementation (std::string tag,
       abort ();
     }
 
+  return dl;
 }
 
 struct CGImplementation {
-  CGImplementation (ParseCGFunc pcg, ParseCGCFunc pcgc)
-    : CGFromXML (pcg), CGCFromXML (pcgc) { }
+  CGImplementation (ParseCGFunc pcg,
+		    ParseCGFunc pcgFile, 
+		    ParseCGCFunc pcgc,
+		    ParseCGCFunc pcgcFile)
+    : CGFromXML (pcg),
+      CGFromXMLFile (pcgFile),
+      CGCFromXML (pcgc),
+      CGCFromXMLFile (pcgcFile){ }
+  CGImplementation () { }
   ParseCGFunc CGFromXML;
+  ParseCGFunc CGFromXMLFile;
   ParseCGCFunc CGCFromXML;
+  ParseCGCFunc CGCFromXMLFile;
 };
 
-typedef std::vector<CGImplementation> CGImplementationsT;
+typedef std::map<std::string, CGImplementation> tagRegistryT;
 
-static CGImplementationsT CGImplementations;
+static tagRegistryT tagRegistry;
+
+typedef std::map<std::string, CGImplementation> libraryRegistryT;
+
+static libraryRegistryT libraryRegistry;
+
+void
+ConnectionGenerator::selectCGImplementation (std::string tag,
+					     std::string library)
+{
+  loadLibrary (library);
+
+  if (libraryRegistry.find (library) == libraryRegistry.end ())
+    {
+      std::cerr << "Library " << library << " not registered" << std::endl;
+      abort ();
+    }
+  tagRegistry.insert (std::make_pair(tag, libraryRegistry[library]));
+}
 
 ConnectionGenerator*
 ConnectionGenerator::fromXML (std::string xml)
 {
-  ParseCGFunc parseCG = CGImplementations[0].CGFromXML;
+  // Jochen: Parse outer xml expression and retrieve tag:
+  std::string tag = "CSA"; // direct assignment for now
+  tagRegistryT::iterator pos = tagRegistry.find (tag);
+  if (pos == tagRegistry.end ())
+    {
+      std::cerr << "fromXML: implementation for tag " << tag << " not selected"
+		<< std::endl;
+      abort ();
+    }
+  ParseCGFunc parseCG = pos->second.CGFromXML;
   return parseCG (xml);
+}
+
+ConnectionGenerator*
+ConnectionGenerator::fromXMLFile (std::string fname)
+{
+  // Jochen: Parse outer xml expression and retrieve tag:
+  std::string tag = "CSA"; // direct assignment for now
+  tagRegistryT::iterator pos = tagRegistry.find (tag);
+  if (pos == tagRegistry.end ())
+    {
+      std::cerr << "fromXMLFile: implementation for tag " << tag
+		<< " not selected" << std::endl;
+      abort ();
+    }
+  ParseCGFunc parseCG = pos->second.CGFromXMLFile;
+  return parseCG (fname);
 }
 
 ConnectionGeneratorClosure*
@@ -126,10 +179,22 @@ ConnectionGeneratorClosure::fromXML (std::string xml)
   return 0;
 }
 
+ConnectionGeneratorClosure*
+ConnectionGeneratorClosure::fromXMLFile (std::string fname)
+{
+  return 0;
+}
+
 void
 registerConnectionGeneratorLibrary (std::string library,
 				    ParseCGFunc pcg,
-				    ParseCGCFunc pcgc)
+				    ParseCGFunc pcgFile,
+				    ParseCGCFunc pcgc,
+				    ParseCGCFunc pcgcFile)
 {
-  CGImplementations.push_back (CGImplementation (pcg, pcgc));
+  libraryRegistry.insert (std::make_pair (library,
+					  CGImplementation (pcg,
+							    pcgFile,
+							    pcgc,
+							    pcgcFile)));
 }
