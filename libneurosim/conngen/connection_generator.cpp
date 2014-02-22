@@ -86,6 +86,7 @@ loadLibrary (std::string library)
     {
       if (lt_dlinit ())
 	{
+	  //*fixme* Add proper error handling
 	  std::cerr << "Couldn't initialize libltdl" << std::endl;
 	  abort ();
 	}
@@ -135,6 +136,7 @@ ConnectionGenerator::selectCGImplementation (std::string tag,
 
   if (libraryRegistry.find (library) == libraryRegistry.end ())
     {
+      //*fixme* Add proper error handling
       std::cerr << "Library " << library << " not registered" << std::endl;
       abort ();
     }
@@ -149,6 +151,7 @@ ConnectionGenerator::fromXML (std::string xml)
   tagRegistryT::iterator pos = tagRegistry.find (tag);
   if (pos == tagRegistry.end ())
     {
+      //*fixme* Add proper error handling
       std::cerr << "fromXML: implementation for tag " << tag << " not selected"
 		<< std::endl;
       abort ();
@@ -165,6 +168,7 @@ ConnectionGenerator::fromXMLFile (std::string fname)
   tagRegistryT::iterator pos = tagRegistry.find (tag);
   if (pos == tagRegistry.end ())
     {
+      //*fixme* Add proper error handling
       std::cerr << "fromXMLFile: implementation for tag " << tag
 		<< " not selected" << std::endl;
       abort ();
