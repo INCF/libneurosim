@@ -24,13 +24,6 @@
 
 #include <vector>
 
-void PyCSA_init ();
-
-extern "C" {
-  bool CGL_isConnectionGenerator (PyObject* pObj);
-  ConnectionGenerator* CGL_unpackConnectionGenerator (PyObject* pObj);
-}
-
 namespace PNS {
 
   struct ConnGenType {
@@ -53,7 +46,7 @@ namespace PNS {
 	 ++type)
       if (type->isConnectionGenerator (pObj))
 	return true;
-    return CGL_isConnectionGenerator (pObj);
+    return false;
   }
 
   ConnectionGenerator*
@@ -64,19 +57,14 @@ namespace PNS {
 	 ++type)
       if (type->isConnectionGenerator (pObj))
 	return type->unpackConnectionGenerator (pObj);
-    return CGL_unpackConnectionGenerator (pObj);
+    //*fixme* Add proper error handling
+    return 0;
   }
 
   void
   registerConnectionGeneratorType (CheckFuncT checkFunc, UnpackFuncT unpackFunc)
   {
     connGenTypes.push_back (ConnGenType (checkFunc, unpackFunc));
-  }
-
-  void
-  init ()
-  {
-    PyCSA_init ();
   }
 
 }

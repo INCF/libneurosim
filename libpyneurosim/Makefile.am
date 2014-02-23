@@ -9,9 +9,7 @@ endif
 
 libpyneurosim_la_SOURCES = \
   pyneurosim.cpp \
-  pyneurosim.h \
-  pycsa.cpp \
-  pycsa.h
+  pyneurosim.h
 
 libpyneurosim_la_HEADERS = \
   pyneurosim.h

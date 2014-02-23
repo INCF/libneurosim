@@ -41,8 +41,6 @@ namespace PNS {
 
   void registerConnectionGeneratorType (CheckFuncT, UnpackFuncT);
 
-  void init ();
-
 }
 
 #endif /* #ifndef PYNEUROSIM_H */
