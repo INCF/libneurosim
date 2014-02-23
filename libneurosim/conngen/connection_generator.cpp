@@ -23,6 +23,8 @@
 #include "connection_generator.h"
 
 #include <iostream>
+#include <sstream> 
+#include <fstream> 
 #include <map>
 #include <ltdl.h>
 
@@ -146,8 +148,15 @@ ConnectionGenerator::selectCGImplementation (std::string tag,
 ConnectionGenerator*
 ConnectionGenerator::fromXML (std::string xml)
 {
-  // Jochen: Parse outer xml expression and retrieve tag:
-  std::string tag = "CSA"; // direct assignment for now
+  std::stringstream xmlStream(xml);
+  std::string tag = ParseXML(xmlStream);
+  if (tag.empty())
+    {
+      //*fixme* Add proper error handling
+      std::cerr << "fromXML: no tag found in the given xml string" << std::endl;
+      abort ();
+    }
+
   tagRegistryT::iterator pos = tagRegistry.find (tag);
   if (pos == tagRegistry.end ())
     {
@@ -163,8 +172,25 @@ ConnectionGenerator::fromXML (std::string xml)
 ConnectionGenerator*
 ConnectionGenerator::fromXMLFile (std::string fname)
 {
-  // Jochen: Parse outer xml expression and retrieve tag:
-  std::string tag = "CSA"; // direct assignment for now
+  std::ifstream xmlFile(fname.c_str());
+  if (!xmlFile)
+    {
+      //*fixme* Add proper error handling
+      std::cerr << "fromXML: file '" << fname << "' not found" << std::endl;
+      abort ();
+    }
+
+  std::stringstream xmlStream;
+  xmlStream << xmlFile.rdbuf();
+  xmlFile.close();
+  std::string tag = ParseXML(xmlStream);
+  if (tag.empty())
+    {
+      //*fixme* Add proper error handling
+      std::cerr << "fromXML: no tag found in the given xml file" << std::endl;
+      abort ();
+    }
+
   tagRegistryT::iterator pos = tagRegistry.find (tag);
   if (pos == tagRegistry.end ())
     {
@@ -187,6 +213,30 @@ ConnectionGeneratorClosure*
 ConnectionGeneratorClosure::fromXMLFile (std::string fname)
 {
   return 0;
+}
+
+std::string ConnectionGenerator::ParseXML(std::stringstream& xmlStream)
+{
+  std::string token;
+
+  while (xmlStream >> token)
+    {
+      if (token.substr(0, 1) == "<")
+        {
+          bool is_starttag = token.substr(0, 5) == "<?xml";
+          bool is_comment = token.substr(0, 4) == "<!--";
+          if (!is_starttag && !is_comment)
+            {
+              size_t len = token.size();
+              if (token.substr(len - 1, len) == ">")
+                  return token.substr(1, len - 2); // skip the closing >
+              else
+                  return token.substr(1, std::string::npos);
+            }
+        }
+    }
+
+  return "";
 }
 
 void

@@ -106,6 +106,17 @@ class ConnectionGenerator {
   static ConnectionGenerator* fromXML (std::string xml);
 
   static ConnectionGenerator* fromXMLFile (std::string fileName);
+
+ private:
+
+  /**
+   * Parse an XML file or string and return the first tag's name. This
+   * function skips the opening tag (<?xml ...>) and comments (<!--
+   * ... -->) up to the first "real" tag and returns the name of
+   * that. If there are no tags other than comments and the start tag,
+   * the function returns an empty string as a result.
+   */
+  static std::string ParseXML(std::stringstream& xmlStream);
 };
 
 #ifdef CONNECTION_GENERATOR_DEBUG
