@@ -13,7 +13,7 @@ simulator.
 Information about libneurosim can be found on the MUSIC home page at
 the INCF Software Center:
 
-    http://software.incf.org/software/libneurosim
+http://software.incf.org/software/libneurosim
 
 ## Submitting bug reports
 
