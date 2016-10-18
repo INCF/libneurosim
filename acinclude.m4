@@ -561,6 +561,18 @@ AC_SUBST(AM_CFLAGS)
 ])
 
 
+dnl @synopsis NS_SET_LDFLAGS
+dnl
+dnl @author Mikael Djurfeldt
+dnl written: 2016-10-18
+
+AC_DEFUN([NS_SET_LDFLAGS],\
+[
+AM_LDFLAGS="$NS_SAVE_LDFLAGS"
+echo "Using AM_LDFLAGS= $AM_LDFLAGS"
+])
+
+
 # configure use of MPI
 #
 # 0. Must be run after GSL_CFLAGS and GSL_LIBS have their final values.
@@ -659,7 +671,7 @@ AC_DEFUN([NS_NEW_PATH_MPI],
     fi 
 
     # we now have a candidat setup, test it
-    AC_MSG_CHECKING([whether MPI candidate $CXX $NS_mpi_inclue $NS_mpi_libs works])
+    AC_MSG_CHECKING([whether MPI candidate $CXX $NS_mpi_include $NS_mpi_libs works])
 
     tmpcxx=$CXXFLAGS
     tmpld=$LDFLAGS
