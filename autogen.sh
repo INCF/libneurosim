@@ -12,13 +12,20 @@ if test -z "$AUTOMAKE" ; then
  done
 fi
 
+if [ `uname -s` = Darwin ] ; then
+# libtoolize is glibtoolize on OSX
+  LIBTOOLIZE=glibtoolize
+else  
+  LIBTOOLIZE=libtoolize
+fi
+
 ./aclocal.sh &&
-echo libtoolize --copy --automake --ltdl &&
-libtoolize --copy --automake --ltdl &&
+echo $LIBTOOLIZE --force --copy --automake --ltdl &&
+$LIBTOOLIZE --force --copy --automake --ltdl &&
 echo autoheader &&
 autoheader &&
 echo autoconf &&
 autoconf &&
-echo $AUTOMAKE --copy --add-missing &&
-$AUTOMAKE --copy --add-missing &&
+echo $AUTOMAKE --foreign --copy --add-missing &&
+$AUTOMAKE --foreign --copy --add-missing &&
 echo Now run configure and make.
