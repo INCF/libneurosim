@@ -613,7 +613,7 @@ AC_DEFUN([NS_NEW_PATH_MPI],
     NS_have_mpi_candidate=no
 
     if test $NS_mpi_prefix = unset ; then
-      AC_CHECK_LIB(mpi,MPI_Init, NS_mpi_libs="-lmpi" \
+      AC_CHECK_LIB(mpi,MPI_Init, NS_mpi_libs="-lmpi_cxx -lmpi" \
 	           NS_have_mpi_candidate=yes, 
                    [                  
 
@@ -630,16 +630,13 @@ AC_DEFUN([NS_NEW_PATH_MPI],
                      p=${e:0:${#e}-11}
                      AC_MSG_RESULT($p) 
 
-                     # Scali needs this macro
-                     AC_CHECK_PROG(rp,mpimon,[ -D_REENTRANT],[]) 
-
                      tmpcxx=$CXXFLAGS
                      tmpld=$LDFLAGS
                      CXXFLAGS="$AM_CXXFLAGS $GSL_CFLAGS $rp -I$p/include"
-                     LDFLAGS="$AM_LDFLAGS $GSL_LIBS -L$p/lib64 -L$p/lib -lmpi"
+                     LDFLAGS="$AM_LDFLAGS $GSL_LIBS -L$p/lib64 -L$p/lib -lmpi_cxx -lmpi"
                      AC_CHECK_LIB(mpi,MPI_Init, 
                                   NS_mpi_include="$rp -I$p/include" \
-                                  NS_mpi_libs="-L$p/lib64 -L$p/lib -lmpi" \
+                                  NS_mpi_libs="-L$p/lib64 -L$p/lib -lmpi_cxx -lmpi" \
   	                          NS_have_mpi_candidate=yes)
                      CXXFLAGS=$tmpcxx
                      LDFLAGS=$tmpld
@@ -649,17 +646,13 @@ AC_DEFUN([NS_NEW_PATH_MPI],
 
     else
 
-      # check in given location
-      # Scali needs this macro
-      AC_CHECK_PROG(rp,mpimon,[ -D_REENTRANT],[])
-
       tmpcxx=$CXXFLAGS
       tmpld=$LDFLAGS
       CXXFLAGS="$AM_CXXFLAGS $GSL_CFLAGS $rp -I${NS_mpi_prefix}/include"
-      LDFLAGS="$AM_LDFLAGS $GSL_LIBS -L${NS_mpi_prefix}/lib64 -L${NS_mpi_prefix}/lib -lmpi"
+      LDFLAGS="$AM_LDFLAGS $GSL_LIBS -L${NS_mpi_prefix}/lib64 -L${NS_mpi_prefix}/lib -lmpi_cxx -lmpi"
       AC_CHECK_LIB(mpi,MPI_Init, \
                    NS_mpi_include="$rp -I${NS_mpi_prefix}/include" \
-                   NS_mpi_libs="-L${NS_mpi_prefix}/lib64 -L${NS_mpi_prefix}/lib -lmpi" \
+                   NS_mpi_libs="-L${NS_mpi_prefix}/lib64 -L${NS_mpi_prefix}/lib -lmpi_cxx -lmpi" \
                    NS_have_mpi_candidate=yes)
       CXXFLAGS=$tmpcxx
       LDFLAGS=$tmpld
