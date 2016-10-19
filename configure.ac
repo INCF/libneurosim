@@ -33,20 +33,10 @@ AM_CONDITIONAL(IS_BLUEGENE, test "x$configure_bluegene" != xno)
 
 # Manually activate MPI, allow to specify directory containing MPI
 #
-# The Scali mpic++ wrapper leads to link problems, so we cannot use it.
-# Instead, we use the plain C++ compiler and look for MPI in the scali
-# installation directory, by default /opt/scali.
-#
-# To make this easy for the user, there are two mutually exclusive options:
-#   --with-mpi    for non-Scali MPI
-#   --with-scali  for Scali MPI
-#
 # Modified from H. E. Plesser, 2007-01-05
-#
 NS_distributed="unset"
 NS_mpi_prefix="unset"
 NS_mpi_option="no"
-NS_scali_option="no"
 
 if test "x$configure_bluegene" = xyes ; then
   NS_distributed=set
@@ -64,10 +54,6 @@ if test "x$configure_bluegene" = xyes ; then
 else
   AC_ARG_WITH(mpi,[  --with-mpi[[=directory]]	Request compilation with MPI; optionally give directory with MPI installation.],
   [
-    if test "$NS_scali_option" = "yes" ; then
-      AC_MSG_ERROR([The --with-mpi and --with-scali options are mutually exclusive.])
-    fi
-
     if test "$withval" = "yes" ; then
       NS_distributed="set"
       NS_mpi_option="yes"
@@ -75,23 +61,6 @@ else
       NS_distributed="set"
       NS_mpi_prefix=`echo ${withval} | sed 's/\/*$//'` # remove trailing slashes
       NS_mpi_option="yes"
-    fi
-  ])
-
-  AC_ARG_WITH(scali, [  --with-scali[[=directory]]	Request compilation with Scali MPI; optionally give directory with Scali [[/opt/scali]]],
-  [
-    if test "$NS_mpi_option" = "yes" ; then
-      AC_MSG_ERROR([The --with-mpi and --with-scali options are mutually exclusive.])
-    fi
-
-    if test "$withval" = "yes" ; then
-      NS_distributed="set"
-      NS_mpi_prefix="/opt/scali"
-      NS_scali_option="yes"
-    elif test "$withval" != "no" ; then
-      NS_distributed="set"
-      NS_mpi_prefix=`echo ${withval} | sed 's#\(.*\)/$#\1# ; q'`
-      NS_scali_option="yes"
     fi
   ])
 fi
@@ -148,53 +117,39 @@ if test "$NS_distributed" = unset ; then
 
 else
 
-  if test "$NS_scali_option" = "yes" ; then
+  # Here we assume that the wrappers work. If an
+  # explicit mpi-path is given, we add its bin to PATH first, then
+  # test, and then redefine the compiler variables to full path
+  # names. This is necessary since AC_PROG_CXX internally searches
+  # through the entire PATH; since AC_PROG_CXX contains many checks
+  # in addition to the search, we cannot simply write our own
+  # absolute-path version.
+  #
+  # Search for MPI C++ compiler wrapper:
+  # 1. Search for mpicxx, since mpicc and mpiCC are the same file
+  #    on non-case-sensitive file systems (most OSX filesystems).
+  # 2. Search for mpiCC, which is MPICH standard
 
-    # We cannot use the mpic++ wrapper for Scali, since it
-    # leads to a linker error due to "hidden symbol __dso_handle"
-    # on several systems. So we just choose the default C++ compiler
-    # and handle MPI via compiler flags later.
-    AC_PROG_CXX
-
+  if test "$NS_mpi_prefix" = unset ; then
+    AC_PROG_CXX(mpicxx mpiCC)
   else
+    NS_SAVE_PATH=$PATH
+    # add /bin, avoiding duplicate //
+    mpi_bin=${NS_mpi_prefix}/bin
 
-    # Non-Scali MPI. Here we assume that the wrappers work. If an
-    # explicit mpi-path is given, we add its bin to PATH first, then
-    # test, and then redefine the compiler variables to full path
-    # names. This is necessary since AC_PROG_CXX internally searches
-    # through the entire PATH; since AC_PROG_CXX contains many checks
-    # in addition to the search, we cannot simply write our own
-    # absolute-path version.
-    #
-    # Search for MPI C++ compiler wrapper:
-    # 1. Search for mpicxx, since mpicc and mpiCC are the same file
-    #    on non-case-sensitive file systems (most OSX filesystems).
-    # 2. Search for mpiCC, which is MPICH standard
-    # 3. Do not look for Scali's mpic++, since the Scali compiler wrapper
-    #    does not work.
+    PATH=${mpi_bin}:$PATH
+    AC_PROG_CXX(mpicxx mpiCC)
 
-    if test "$NS_mpi_prefix" = unset ; then
-      AC_PROG_CXX(mpicxx mpiCC)
-    else
-      NS_SAVE_PATH=$PATH
-      # add /bin, avoiding duplicate //
-      mpi_bin=${NS_mpi_prefix}/bin
-
-      PATH=${mpi_bin}:$PATH
-      AC_PROG_CXX(mpicxx mpiCC)
-
-      # If mpicxx or mpiCC are chosen, we check if they exists in the prefix
-      # path. If so, we add the prefix path. Otherwise, we leave CXX untouched.
-      if test $CXX = mpicxx -o $CXX = mpiCC ; then
-        if test -x ${mpi_bin}/$CXX ; then
-          CXX=$mpi_bin/$CXX
-          ac_ct_CXX=$CXX
-          ac_cv_prog_ac_ct_CXX=$CXX
-        fi
+    # If mpicxx or mpiCC are chosen, we check if they exists in the prefix
+    # path. If so, we add the prefix path. Otherwise, we leave CXX untouched.
+    if test $CXX = mpicxx -o $CXX = mpiCC ; then
+      if test -x ${mpi_bin}/$CXX ; then
+        CXX=$mpi_bin/$CXX
+        ac_ct_CXX=$CXX
+        ac_cv_prog_ac_ct_CXX=$CXX
       fi
-      PATH=$NS_SAVE_PATH
     fi
-
+    PATH=$NS_SAVE_PATH
   fi
 
 fi
