@@ -1,3 +1,3 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-SUBDIRS = libltdl libneurosim libpyneurosim
+SUBDIRS = libltdl neurosim libpyneurosim

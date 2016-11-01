@@ -3,7 +3,7 @@
  *
  *  This file is part of libneurosim.
  *
- *  Copyright (C) 2013 INCF
+ *  Copyright (C) 2016 INCF
  *
  *  libneurosim is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *
  */
 
-#include "connection_generator.h"
+#include "connection_generator_V2_0.h"
 
 #include <iostream>
 #include <sstream> 
@@ -28,27 +28,12 @@
 #include <map>
 #include <ltdl.h>
 
-ConnectionGenerator::~ConnectionGenerator ()
-{}
-
-
-void
-ConnectionGenerator::setMask (Mask& mask)
-{
-  std::vector<Mask> m;
-  m.push_back (mask);
-  setMask (m, 0);
-}
-
-
-void
-ConnectionGenerator::setMask (std::vector<Mask>&, int)
-{}
-
+#if 0
 /**
  * Default implementation of size ()
  */
-int ConnectionGenerator::size ()
+int
+CGEN::V2_0::ConnectionGenerator::size ()
 {
   start ();
   int i, j;
@@ -58,6 +43,7 @@ int ConnectionGenerator::size ()
   delete[] vals;
   return n;
 }
+#endif
 
 #ifdef CONNECTION_GENERATOR_DEBUG
 /**
@@ -107,19 +93,19 @@ loadLibrary (std::string library)
 }
 
 struct CGImplementation {
-  CGImplementation (ParseCGFunc pcg,
-		    ParseCGFunc pcgFile, 
-		    ParseCGCFunc pcgc,
-		    ParseCGCFunc pcgcFile)
+  CGImplementation (CGEN::V2_0::ParseCGFunc pcg,
+		    CGEN::V2_0::ParseCGFunc pcgFile, 
+		    CGEN::V2_0::ParseCGCFunc pcgc,
+		    CGEN::V2_0::ParseCGCFunc pcgcFile)
     : CGFromXML (pcg),
       CGFromXMLFile (pcgFile),
       CGCFromXML (pcgc),
       CGCFromXMLFile (pcgcFile){ }
   CGImplementation () { }
-  ParseCGFunc CGFromXML;
-  ParseCGFunc CGFromXMLFile;
-  ParseCGCFunc CGCFromXML;
-  ParseCGCFunc CGCFromXMLFile;
+  CGEN::V2_0::ParseCGFunc CGFromXML;
+  CGEN::V2_0::ParseCGFunc CGFromXMLFile;
+  CGEN::V2_0::ParseCGCFunc CGCFromXML;
+  CGEN::V2_0::ParseCGCFunc CGCFromXMLFile;
 };
 
 typedef std::map<std::string, CGImplementation> tagRegistryT;
@@ -131,8 +117,8 @@ typedef std::map<std::string, CGImplementation> libraryRegistryT;
 static libraryRegistryT libraryRegistry;
 
 void
-ConnectionGenerator::selectCGImplementation (std::string tag,
-					     std::string library)
+CGEN::V2_0::ConnectionGenerator::selectCGImplementation (std::string tag,
+							 std::string library)
 {
   loadLibrary (library);
 
@@ -145,8 +131,8 @@ ConnectionGenerator::selectCGImplementation (std::string tag,
   tagRegistry.insert (std::make_pair(tag, libraryRegistry[library]));
 }
 
-ConnectionGenerator*
-ConnectionGenerator::fromXML (std::string xml)
+CGEN::V2_0::ConnectionGenerator*
+CGEN::V2_0::ConnectionGenerator::fromXML (std::string xml)
 {
   std::stringstream xmlStream(xml);
   std::string tag = ParseXML(xmlStream);
@@ -169,8 +155,8 @@ ConnectionGenerator::fromXML (std::string xml)
   return parseCG (xml);
 }
 
-ConnectionGenerator*
-ConnectionGenerator::fromXMLFile (std::string fname)
+CGEN::V2_0::ConnectionGenerator*
+CGEN::V2_0::ConnectionGenerator::fromXMLFile (std::string fname)
 {
   std::ifstream xmlFile(fname.c_str());
   if (!xmlFile)
@@ -203,19 +189,22 @@ ConnectionGenerator::fromXMLFile (std::string fname)
   return parseCG (fname);
 }
 
-ConnectionGeneratorClosure*
-ConnectionGeneratorClosure::fromXML (std::string xml)
+CGEN::V2_0::ConnectionGeneratorClosure*
+CGEN::V2_0::ConnectionGeneratorClosure::fromXML (std::string xml)
 {
+  (void) xml;
   return 0;
 }
 
-ConnectionGeneratorClosure*
-ConnectionGeneratorClosure::fromXMLFile (std::string fname)
+CGEN::V2_0::ConnectionGeneratorClosure*
+CGEN::V2_0::ConnectionGeneratorClosure::fromXMLFile (std::string fname)
 {
+  (void) fname;
   return 0;
 }
 
-std::string ConnectionGenerator::ParseXML(std::stringstream& xmlStream)
+std::string
+CGEN::V2_0::ConnectionGenerator::ParseXML(std::stringstream& xmlStream)
 {
   std::string token;
 
@@ -240,11 +229,11 @@ std::string ConnectionGenerator::ParseXML(std::stringstream& xmlStream)
 }
 
 void
-registerConnectionGeneratorLibrary (std::string library,
-				    ParseCGFunc pcg,
-				    ParseCGFunc pcgFile,
-				    ParseCGCFunc pcgc,
-				    ParseCGCFunc pcgcFile)
+CGEN::V2_0::registerConnectionGeneratorLibrary (std::string library,
+						ParseCGFunc pcg,
+						ParseCGFunc pcgFile,
+						ParseCGCFunc pcgc,
+						ParseCGCFunc pcgcFile)
 {
   libraryRegistry.insert (std::make_pair (library,
 					  CGImplementation (pcg,

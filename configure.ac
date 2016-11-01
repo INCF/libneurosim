@@ -4,6 +4,27 @@ AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
+# Obtain host system type
+AC_CANONICAL_HOST
+
+# Debug level
+# Note, $NS_debug is used in acinclude.m4
+NS_debug="set"
+# Flags depend on platform and compiler and will be set later
+NS_debugflags=""
+
+# Optimization level
+# Note, $NS_optimize is used in acinclude.m4
+NS_optimize="set"
+# Flags depend on platform and compiler and will be set later
+NS_optimizeflags=""
+
+# Warning level
+# Note, $NS_warning is used in acinclude.m4
+NS_warning="set"
+# Flags depend on platform and compiler and will be set later
+NS_warningflags=""
+
 bluegene_architecture="none"
 configure_bluegene="no"
 AC_MSG_CHECKING(whether we are configuring for Blue Gene)
@@ -207,8 +228,9 @@ AC_SUBST(LIBADD_DL)
 
 AC_CONFIG_FILES([
   Makefile
-  libneurosim/Makefile
-  libneurosim/version.h
+  neurosim/Makefile
+  neurosim/version.h
+  neurosim/examples/Makefile
   libpyneurosim/Makefile
 ])
 
