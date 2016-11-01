@@ -3,7 +3,7 @@
  *
  *  This file is part of libneurosim.
  *
- *  Copyright (C) 2013 INCF
+ *  Copyright (C) 2013, 2016 INCF
  *
  *  libneurosim is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 
 #ifndef CONNECTION_GENERATOR_H
 #define CONNECTION_GENERATOR_H
+
+#include <neurosim/connection_generator_V2_0.h>
 
 //#define CONNECTION_GENERATOR_DEBUG 1
 

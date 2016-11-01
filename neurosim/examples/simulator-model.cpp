@@ -1,9 +1,7 @@
 /*
- *  pyneurosim.h
+ *  simulator-model.cpp
  *
- *  This file is part of libneurosim.
- *
- *  Copyright (C) 2013, 2016 INCF
+ *  Copyright (C) 2016 INCF
  *
  *  libneurosim is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,27 +18,24 @@
  *
  */
 
-#ifndef PYNEUROSIM_H
-#define PYNEUROSIM_H
+#include "simulator-model.h"
 
-extern "C" {
-#include <Python.h>
+namespace SIM {
+  
+  int
+  Simulator::remap (int gid)
+  {
+    return gid;
+  }
+  
+  void
+  Simulator::connect (int source, int target, double weight, double delay)
+  {
+    (void) source;
+    (void) target;
+    (void) weight;
+    (void) delay;
+    // Do nothing
+  }
+
 }
-
-#include <neurosim/connection_generator.h>
-
-namespace PNS {
-
-  bool isConnectionGenerator (PyObject* pObj);
-
-  ConnectionGenerator* unpackConnectionGenerator (PyObject* pObj);
-
-  typedef bool (*CheckFuncT) (PyObject*);
-
-  typedef ConnectionGenerator* (*UnpackFuncT) (PyObject*);
-
-  void registerConnectionGeneratorType (CheckFuncT, UnpackFuncT);
-
-}
-
-#endif /* #ifndef PYNEUROSIM_H */
