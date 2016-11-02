@@ -71,9 +71,13 @@ namespace CGEN {
 	int i_;
       public:
 	const_iterator (int i) : i_ {i} { }
+	operator int () const { return i_; }
 	int operator* () const { return i_; }
 	bool operator!= (const_iterator other) const { return i_ != other.i_; };
 	const_iterator operator++ () { return const_iterator (++i_); }
+	const_iterator operator+= (int skip) {
+	  return const_iterator (i_ += skip);
+	}
       };
 
       const_iterator begin () const { return const_iterator (from_); }

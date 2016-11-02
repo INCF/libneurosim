@@ -280,7 +280,7 @@ echo "Platform: ${host}"
          NS_warningflags="-W -Wall -pedantic -Wno-long-long"
        fi
        if test "$NS_optimize" = "set" -a -z "$NS_optimizeflags"; then 
-         NS_optimizeflags="-O2"
+         NS_optimizeflags="-O3"
        fi
      fi		
      ;;
@@ -369,7 +369,7 @@ echo "Platform: ${host}"
            NS_warningflags="-W -Wall -pedantic -Wno-long-long"
          fi
          if test "$NS_optimize" = "set" -a -z "$NS_optimizeflags"; then 
-           NS_optimizeflags="-O2"
+           NS_optimizeflags="-O3"
          fi
        fi
      fi
@@ -543,7 +543,7 @@ echo "Platform: ${host}"
          NS_warningflags="-W -Wall -pedantic -Wno-long-long"
        fi
        if test "$NS_optimize" = "set" -a -z "$NS_optimizeflags"; then 
-         NS_optimizeflags="-O2"
+         NS_optimizeflags="-O3"
        fi
      fi		
      ;;

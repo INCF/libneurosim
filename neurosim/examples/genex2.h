@@ -43,11 +43,15 @@ class AllToAllWD : public CGEN::ConnectionGeneratorT<double, double> {
     void iterate (CGEN::SourceFirstIterable<double, double>* iterable)
     {
       for (auto ival : mask_.targets)
-	for (auto target : ival)
+	for (auto target = ival.begin ();
+	     target != ival.end ();
+	     target += mask_.targets.skip ())
 	  {
 	    iterable->target (target);
 	    for (auto ival : mask_.sources)
-	      for (auto source : ival)
+	      for (auto source = ival.begin ();
+		   source != ival.end ();
+		   source += mask_.sources.skip ())
 		iterable->connection (source, target, 1.0, 1e-3);
 	  }
     }

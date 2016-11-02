@@ -21,24 +21,7 @@
 #include <string>
 
 #include "simulator-model.h"
-#include "genex2.h"
-
-class Iterable : public CGEN::SourceFirstIterable<double, double> {
-  SIM::Simulator& sim_;
-  int remappedTarget_;
-public:
-  Iterable (SIM::Simulator& sim) : sim_ {sim} { }
-  void target (int target)
-  {
-    remappedTarget_ = sim_.remap (target);
-  }
-	    
-  void connection (int source, int target, double weight, double delay)
-  {
-    (void) target;
-    sim_.connect (sim_.remap (source), remappedTarget_, weight, delay);
-  }
-};
+#include "genex1.h"
 
 int
 main (int argc, char* argv[])
@@ -50,14 +33,24 @@ main (int argc, char* argv[])
   SIM::Simulator sim;
   auto cg = new AllToAllWD ();
   
-  CGEN::Mask mask;
-  mask.sources.insert (0, end);
-  mask.targets.insert (0, end);
+  ConnectionGenerator::Mask mask;
+  mask.sources.insert (0, end - 1);
+  mask.targets.insert (0, end - 1);
 
-  auto connections = cg->connections (mask);
+  cg->setMask (mask);
 
-  Iterable iterable (sim);
-  connections->iterate (&iterable);
+  cg->start ();
+  
+  int source;
+  int target;
+  double params[2];
+  while (cg->next (source, target, &params[0]))
+    {
+      sim.connect (sim.remap (source),
+		   sim.remap (target),
+		   params[0],
+		   params [1]);
+    }
 
   delete cg;
 }
