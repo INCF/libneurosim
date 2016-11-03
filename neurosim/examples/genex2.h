@@ -30,15 +30,9 @@ class AllToAllWD : public CGEN::ConnectionGeneratorT<double, double> {
   private:
     CGEN::Mask mask_;
   public:
-    Connections (CGEN::Mask& mask,
-		 int threadNum = 0,
-		 std::shared_ptr<CGEN::Parameters> par
-		 = std::make_shared<CGEN::Parameters> ())
+    Connections (CGEN::Mask& mask)
       : mask_ (mask)
-    {
-      (void) threadNum;
-      (void) par;
-    }
+    { }
     
     void iterate (CGEN::SourceFirstIterable<double, double>* iterable)
     {
@@ -59,14 +53,16 @@ class AllToAllWD : public CGEN::ConnectionGeneratorT<double, double> {
 public:
   int arity () const { return 2; }
     
-  std::unique_ptr<CGEN::Connections<double, double>>
+  std::shared_ptr<CGEN::Connections<double, double>>
     connections (CGEN::Mask& mask,
 		 int threadNum = 0,
-		 std::shared_ptr<CGEN::Parameters> par
-		 = std::make_shared<CGEN::Parameters> ())
+		 std::shared_ptr<CGEN::Context> par
+		 = std::make_shared<CGEN::Context> ())
   {
-    std::unique_ptr<CGEN::Connections<double, double>> c
-    { new Connections (mask, threadNum, par) };
+    (void) threadNum;
+    (void) par;
+    std::shared_ptr<CGEN::Connections<double, double>> c
+    { new Connections (mask) };
     return c;
   }
 };

@@ -27,6 +27,16 @@
 #include <string>
 #include <memory>
 
+#include <neurosim/config.h>
+
+#if NEUROSIM_HAVE_MPI
+#include <mpi.h>
+#endif
+
+#if _OPENMP
+#include <omp.h>
+#endif
+
 namespace CGEN {
 
   inline
@@ -124,10 +134,61 @@ namespace CGEN {
     };
 
 
-    class Parameters {
+    /*
+     * The Context object should be created and configured by a single
+     * thread, and the same instance should be shared between threads.
+     */
+    class Context {
+      int threadsPerProcess_;
+#if NEUROSIM_HAVE_MPI
+      MPI_Comm communicator_;
+#endif
     public:
-      
+#if NEUROSIM_HAVE_MPI
+      Context ()
+	: Context (1, MPI_COMM_NULL) { };
+      Context (int threadsPerProcess, MPI_Comm communicator)
+	: threadsPerProcess_ {threadsPerProcess},
+	  communicator_ {communicator} { };
+#else
+      Context ()
+	: Context (1) { };
+      Context (int threadsPerProcess)
+	: threadsPerProcess_ {threadsPerProcess} { };
+#endif
+      virtual ~Context () { }
+      int threadsPerProcess () { return threadsPerProcess_; }
+#if NEUROSIM_HAVE_MPI
+      MPI_Comm communicator () { return communicator_; }
+#endif
+      /*
+       * These functions should be used by connection generators for
+       * thread support. The default implementation throws errors.
+       */
+      struct Lock { };
+      virtual void initLock (Lock* lock);
+      virtual void lock (Lock* lock);
+      virtual void unlock (Lock* lock);
+      virtual void destroyLock (Lock* lock);
+      /* All threads must reach the barrier before any can proceed. */
+      virtual void barrier ();
     };
+
+    
+#if _OPENMP
+    class OpenMPContext : public Context {
+    public:
+      struct OpenMPLock : Lock {
+	omp_lock_t lock;
+      };
+      void initLock (Lock* lock);
+      void lock (Lock* lock);
+      void unlock (Lock* lock);
+      void destroyLock (Lock* lock);
+      /* All threads must reach the barrier before any can proceed. */
+      void barrier ();
+    };
+#endif
 
     
     /**
@@ -179,11 +240,11 @@ namespace CGEN {
     class ConnectionGeneratorT : public ConnectionGenerator {
     public:
 
-      virtual std::unique_ptr<Connections<Types...>>
+      virtual std::shared_ptr<Connections<Types...>>
       connections (CGEN::Mask& mask,
 		   int threadNum = 0,
-		   std::shared_ptr<Parameters> par
-		   = std::make_shared<Parameters> ()) = 0;
+		   std::shared_ptr<Context> par
+		   = std::make_shared<Context> ()) = 0;
 
     };
 

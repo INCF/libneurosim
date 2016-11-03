@@ -216,6 +216,9 @@ if test "$NS_distributed" = "set"; then
     NS_NEW_PATH_MPI
   fi
   AC_DEFINE(HAVE_MPI, 1, [Compile for MPI])
+  NEUROSIM_HAVE_MPI=1
+else
+  NEUROSIM_HAVE_MPI=0
 fi
 
 AC_SUBST(MPI_LIBS)
@@ -224,11 +227,14 @@ AC_SUBST(PYTHON_INCLUDE)
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
 AC_SUBST(HAVE_LIBLTDL)
+AC_SUBST(HAVE_MPI)
+AC_SUBST(NEUROSIM_HAVE_MPI)
 AC_SUBST(LIBADD_DL)
 
 AC_CONFIG_FILES([
   Makefile
   neurosim/Makefile
+  neurosim/config.h
   neurosim/version.h
   neurosim/examples/Makefile
   libpyneurosim/Makefile

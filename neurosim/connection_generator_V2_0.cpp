@@ -24,9 +24,51 @@
 
 #include <iostream>
 #include <sstream> 
-#include <fstream> 
+#include <fstream>
+#include <stdexcept>
 #include <map>
 #include <ltdl.h>
+
+static const char E_NO_THREADS[] = "Context doesn't support threads.";
+
+void
+CGEN::V2_0::Context::initLock (Lock* lock)
+{
+  (void) lock;
+  throw std::logic_error (E_NO_THREADS);
+}
+
+
+void
+CGEN::V2_0::Context::lock (Lock* lock)
+{
+  (void) lock;
+  throw std::logic_error (E_NO_THREADS);
+}
+
+
+void
+CGEN::V2_0::Context::unlock (Lock* lock)
+{
+  (void) lock;
+  throw std::logic_error (E_NO_THREADS);
+}
+
+
+void
+CGEN::V2_0::Context::destroyLock (Lock* lock)
+{
+  (void) lock;
+  throw std::logic_error (E_NO_THREADS);
+}
+
+
+void
+CGEN::V2_0::Context::barrier ()
+{
+  throw std::logic_error (E_NO_THREADS);
+}
+
 
 #if 0
 /**

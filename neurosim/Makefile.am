@@ -14,6 +14,7 @@ libneurosim_la_SOURCES = \
   version.c version.h
 
 libneurosim_la_HEADERS = \
+  ../config.h \
   connection_generator.h \
   connection_generator_V2_0.h \
   version.h

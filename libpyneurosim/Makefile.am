@@ -16,6 +16,6 @@ libpyneurosim_la_HEADERS = \
 
 libpyneurosim_la_CXXFLAGS = -I@PYTHON_INCLUDE@ -I$(top_srcdir)
 
-libpyneurosim_la_LDFLAGS = $(top_builddir)/libneurosim/libneurosim.la
+libpyneurosim_la_LDFLAGS = $(top_builddir)/neurosim/libneurosim.la
 
 libpyneurosim_ladir = $(includedir)/neurosim
