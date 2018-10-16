@@ -11,3 +11,5 @@ install-sh
 libltdl/
 ltmain.sh
 missing
+
+*~
