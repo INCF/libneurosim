@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce configure.
-AC_INIT(libneurosim, 1.0.0)
+AC_INIT(libneurosim, 1.0.0, [https://github.com/INCF/libneurosim/issues])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
@@ -155,12 +155,16 @@ else
 fi
 # further processing of distributed case below (see NS_NEW_PATH_MPI)
 
-AM_PATH_PYTHON
+dnl Choose Python version
+AC_ARG_WITH([python], [AS_HELP_STRING([--with-python], [python version to use 2 or 3])], [], [with_python=no])
+AM_PATH_PYTHON(["$with_python"])
 AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != [:]])
 if test $PYTHON != [:]; then
-  PYTHON_INCLUDE=`$PYTHON -c 'from distutils import sysconfig;\
-  			      print (sysconfig.get_python_inc ())'`
+    PYTHON_INCLUDE=`$PYTHON -c 'from distutils import sysconfig;\
+        print (sysconfig.get_python_inc ())'`
 fi
+dnl set this to use in the makefile
+AM_CONDITIONAL([PY3], [test "x$with_python" = x3 ])
 
 NS_SET_CFLAGS
 CFLAGS=
