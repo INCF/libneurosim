@@ -157,7 +157,16 @@ fi
 
 dnl Choose Python version
 AC_ARG_WITH([python], [AS_HELP_STRING([--with-python], [python version to use 2 or 3])], [], [with_python=no])
-AM_PATH_PYTHON(["$with_python"])
+# default version is 2
+if test "$with_python" = yes; then
+   with_python=2
+fi
+# don't look for Python if --with-python wasn't given
+if test "$with_python" != no; then
+   AM_PATH_PYTHON(["$with_python"])
+else
+   PYTHON=":"
+fi
 AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != [:]])
 if test $PYTHON != [:]; then
     PYTHON_INCLUDE=`$PYTHON -c 'from distutils import sysconfig;\
