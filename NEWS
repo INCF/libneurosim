@@ -1,7 +1,19 @@
 libneurosim NEWS --- history of user-visible changes.
-Copyright (C) 2013 INCF
+Copyright (C) 2013, 2020 INCF
 
 Please send libneurosim bug reports to mikael.djurfeldt@incf.org.
+
+
+Changes in 1.2.0
+
+* New interfaces and functionality
+
+** A new version of the connection generator interface has been introduced
+
+The new version of the interface is accessible in the namespace V2_0.
+
+Examples are given under neurosim/examples. runiter2.cpp uses the new
+interface.
 
 
 First release: 1.0
