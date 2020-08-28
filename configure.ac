@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce configure.
-AC_INIT(libneurosim, 1.0.0, [https://github.com/INCF/libneurosim/issues])
+AC_INIT(libneurosim, 1.2.0, [https://github.com/INCF/libneurosim/issues])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
