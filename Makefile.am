@@ -1,3 +1,3 @@
-AUTOMAKE_OPTIONS = subdir-objects
+AUTOMAKE_OPTIONS = subdir-objects foreign
 
 SUBDIRS = libltdl neurosim libpyneurosim
